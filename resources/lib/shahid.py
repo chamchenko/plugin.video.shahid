@@ -68,6 +68,7 @@ class SHAHID(object):
             liz         = xbmcgui.ListItem(name, path=playbackURL)
             liz.setProperty('inputstreamaddon','inputstream.adaptive')
             liz.setProperty('inputstream.adaptive.manifest_type',  'hls')
+        xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem=liz)
         #else:
         # to do## drm support#
 params=getParams()
