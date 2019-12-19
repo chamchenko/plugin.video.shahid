@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="plugin.video.shahid" version="0.1.0" name="SHAHED" provider-name="CHAMCHENKO">
+    <requires>
+        <import addon="xbmc.python" version="2.25.0"/>
+        <import addon="script.module.simplecache" version="1.0.0"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB"></summary>
+        <description lang="en_GB"></description>
+        <description lang="en_GB">Kodi add-on for watching videos from shahid.mbc.net</description>
+        <platform>all</platform>
+        <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
+        <source>https://github.com/CHAMCHENKO/KODI_Addons/tree/master/plugin.video.shahid</source>
+        <website>https://shahid.mbc.net/</website>
+        <assets>
+            <icon>resources/images/icon.png</icon>
+            <fanart>resources/images/fanart.jpg</fanart>
+            <screenshot>resources/images/screenshot000.jpg</screenshot>
+            <screenshot>resources/images/screenshot001.jpg</screenshot>
+            <screenshot>resources/images/screenshot002.jpg</screenshot>
+            <screenshot>resources/images/screenshot003.jpg</screenshot>
+            <screenshot>resources/images/screenshot004.jpg</screenshot>
+        </assets>
+    </extension>
+</addon>
