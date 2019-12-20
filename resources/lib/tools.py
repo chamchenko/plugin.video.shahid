@@ -22,6 +22,13 @@ def unescape(string):
 def getParams():
     return dict(urlparse.parse_qsl(sys.argv[2][1:]))
 
+def getBitrate(HLSRAW):
+    pattern         = '(BANDWIDTH\=)([0-9]+)(.*\,RESOLUTION\=.*x%s)'%QUALITY
+    try: bitrate    = re.findall(pattern, HLSRAW)[0][1]
+    except: bitrate = None
+    return bitrate
+
+#to use if inputstream adaptive is not installed
 def getPlaybackURL(HLSRAW,burl):
     playbackURL= ""
     for idx, line in enumerate(HLSRAW.split('\n')):

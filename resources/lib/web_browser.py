@@ -4,7 +4,7 @@ from simplecache import SimpleCache
 from tools import log
 cache = SimpleCache()
 def cacheURL(url, headers):
-    log('openURL, url = ' + str(url))
+    log('cacheURL, url = ' + str(url))
     try:
         cacheResponse = cache.get(ADDON_NAME + '.openURL, url = %s,headers = %s'%(url,headers))
         if not cacheResponse:

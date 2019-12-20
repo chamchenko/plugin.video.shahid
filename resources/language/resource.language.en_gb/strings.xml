@@ -2,4 +2,9 @@
 <strings>
     <string id="30001">Something went wrong, Try again...</string>
     <string id="30002">Select Preferred Quality</string>
+    <string id="30003">DRM Protected Not supported for Now..</string>
+    <string id="40001">Live TV</string>
+    <string id="40002">TV Shows</string>
+    <string id="40003">TV Programs</string>
+    <string id="40004">Search</string>
 </strings>

@@ -49,28 +49,28 @@ class SHAHID(object):
 
     def playVideo(self, name, streamId, liz=None):
         log('playVideo')
-        live        = 'False'
         playoutURL  = PLAYOUT_URL%streamId
-        playoutURL2 = PLAYOUT_URL2%streamId
         headers     = {'User-Agent': USER_AGENT}
-        try:
-            jsonstr     = json.loads(cacheURL(playoutURL, headers))
-            drm    = str(jsonstr['playout']['drm'])
-        except: drm = 'True' ; live = 'True'
-        if live == 'True':
-            jsonstr     = json.loads(cacheURL(playoutURL2, headers))
-            playbackURL = jsonstr['playout']['url']
+        jsonstr     = json.loads(cacheURL(playoutURL, headers))
+        drm         = jsonstr['playout']['drm']
+        if drm:
+            xbmcgui.Dialog().notification(ADDON_NAME, LANGUAGE(30003), ICON, 4000)
+            # to do## drm support#
+            return
+        else:
+            playbackURL = jsonstr['playout']['url'].replace('filter=NO_HD,','')
             liz         = xbmcgui.ListItem(name, path=playbackURL)
-            liz.setProperty('inputstreamaddon','inputstream.adaptive')
-            liz.setProperty('inputstream.adaptive.manifest_type',  'hls')
-        elif str(jsonstr['playout']['drm']) == "False":
-            playbackURL = jsonstr['playout']['url']
-            liz         = xbmcgui.ListItem(name, path=playbackURL)
+            bitrate     = getBitrate(cacheURL(playbackURL,headers))
+            if bitrate:
+                xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='MINBANDWIDTH', value=bitrate)
+                xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='MAXBANDWIDTH', value=str(int(bitrate)+100000))
+                xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='STREAMSELECTION', value="0")
+            else: xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='STREAMSELECTION', value="1")
             liz.setProperty('inputstreamaddon','inputstream.adaptive')
             liz.setProperty('inputstream.adaptive.manifest_type',  'hls')
         xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem=liz)
-        #else:
-        # to do## drm support#
+        xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='MINBANDWIDTH', value="0")
+        xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='MAXBANDWIDTH', value="0")
 params=getParams()
 try: url=urllib.unquote_plus(params["url"])
 except: url=None
