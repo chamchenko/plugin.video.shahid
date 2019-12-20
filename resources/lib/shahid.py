@@ -47,6 +47,7 @@ class SHAHID(object):
     def browseEpisodes(self,playListId):
         getEpisodes(playListId)
 
+
     def playVideo(self, name, streamId, liz=None):
         log('playVideo')
         playoutURL  = PLAYOUT_URL%streamId
@@ -54,23 +55,33 @@ class SHAHID(object):
         jsonstr     = json.loads(cacheURL(playoutURL, headers))
         drm         = jsonstr['playout']['drm']
         if drm:
-            xbmcgui.Dialog().notification(ADDON_NAME, LANGUAGE(30003), ICON, 4000)
-            # to do## drm support#
-            return
+            playbackURL     = jsonstr['playout']['url']
+            requrl          = DRM_URL%(urllib.quote('{"assetId":%s}'%streamId))
+            headers         = {'User-Agent': USER_AGENT, 'BROWSER_NAME': 'CHROME', 'SHAHID_OS': 'LINUX', 'BROWSER_VERSION': '79.0'}
+            request         = urllib2.Request(requrl, headers=headers)
+            Response        = urllib2.urlopen(request, timeout = TIMEOUT).read().decode('utf-8').strip()
+            licenceurl      = json.loads(Response)['signature']
+            URL_LICENCE_KEY = '%s|authority=shahiddotnet.keydelivery.westeurope.media.azure.net&origin=https://shahid.mbc.net&User-Agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36&referer=https://shahid.mbc.net|R{SSM}|'%licenceurl
+            liz             = xbmcgui.ListItem(name, path=playbackURL)
+            liz.setProperty('inputstreamaddon','inputstream.adaptive')
+            liz.setProperty('inputstream.adaptive.manifest_type', 'ism')
+            liz.setProperty('inputstream.adaptive.license_type', 'com.widevine.alpha')
+            liz.setProperty('inputstream.adaptive.license_key', URL_LICENCE_KEY)
         else:
             playbackURL = jsonstr['playout']['url'].replace('filter=NO_HD,','')
             liz         = xbmcgui.ListItem(name, path=playbackURL)
-            bitrate     = getBitrate(cacheURL(playbackURL,headers))
-            if bitrate:
-                xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='MINBANDWIDTH', value=bitrate)
-                xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='MAXBANDWIDTH', value=str(int(bitrate)+100000))
-                xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='STREAMSELECTION', value="0")
-            else: xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='STREAMSELECTION', value="1")
             liz.setProperty('inputstreamaddon','inputstream.adaptive')
             liz.setProperty('inputstream.adaptive.manifest_type',  'hls')
+        bitrate     = getBitrate(cacheURL(playbackURL,headers),drm)
+        if bitrate:
+            xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='MINBANDWIDTH', value=bitrate)
+            xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='MAXBANDWIDTH', value=str(int(bitrate)+100000))
+            xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='STREAMSELECTION', value="0")
+        else: xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='STREAMSELECTION', value="1")
         xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem=liz)
         xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='MINBANDWIDTH', value="0")
         xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='MAXBANDWIDTH', value="0")
+
 params=getParams()
 try: url=urllib.unquote_plus(params["url"])
 except: url=None
