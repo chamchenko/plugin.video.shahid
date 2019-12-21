@@ -23,7 +23,8 @@ import urlparse, urllib, urllib2, socket, json, HTMLParser
 import xbmc, xbmcgui, xbmcplugin, xbmcaddon
 from tools import *
 from live import getLive
-from tvshows import getShows, getSeasons, getEpisodes, getCategories
+from tvshows import getShows, getSeasons, getEpisodes, getCategories, getSeasonClips
+from search import searchContent
 from create_item import addDir
 from vars import *
 from web_browser import *
@@ -46,7 +47,10 @@ class SHAHID(object):
         getSeasons(showId)
     def browseEpisodes(self,playListId):
         getEpisodes(playListId)
-
+    def browseSearch(self):
+        searchContent()
+    def browseSeasonClips(self,playlists):
+        getSeasonClips(playlists)
 
     def playVideo(self, name, streamId, liz=None):
         log('playVideo')
@@ -61,7 +65,8 @@ class SHAHID(object):
             request         = urllib2.Request(requrl, headers=headers)
             Response        = urllib2.urlopen(request, timeout = TIMEOUT).read().decode('utf-8').strip()
             licenceurl      = json.loads(Response)['signature']
-            URL_LICENCE_KEY = '%s|authority=shahiddotnet.keydelivery.westeurope.media.azure.net&origin=https://shahid.mbc.net&User-Agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36&referer=https://shahid.mbc.net|R{SSM}|'%licenceurl
+            authority       = 'shahiddotnet.keydelivery.westeurope.media.azure.net'
+            URL_LICENCE_KEY = '%s|authority=%s&origin=%s&User-Agent=%s&referer=%s|R{SSM}|'%(licenceurl,authority,BASE_URL,USER_AGENT,BASE_URL)
             liz             = xbmcgui.ListItem(name, path=playbackURL)
             liz.setProperty('inputstreamaddon','inputstream.adaptive')
             liz.setProperty('inputstream.adaptive.manifest_type', 'ism')
@@ -73,14 +78,19 @@ class SHAHID(object):
             liz.setProperty('inputstreamaddon','inputstream.adaptive')
             liz.setProperty('inputstream.adaptive.manifest_type',  'hls')
         bitrate     = getBitrate(cacheURL(playbackURL,headers),drm)
+        # match bitrate to resolution and change inputstream adaptive settings
         if bitrate:
             xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='MINBANDWIDTH', value=bitrate)
             xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='MAXBANDWIDTH', value=str(int(bitrate)+100000))
             xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='STREAMSELECTION', value="0")
-        else: xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='STREAMSELECTION', value="1")
+        else: # set selecting mode to manual it includes QUALITY set to dialog and quality not found in manifest
+            xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='STREAMSELECTION', value="1")
         xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem=liz)
-        xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='MINBANDWIDTH', value="0")
-        xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='MAXBANDWIDTH', value="0")
+        # wait for the playback to start then reset inputstream adaptive settings to to what they were before
+        time.sleep(2)
+        xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='STREAMSELECTION', value=STREAMSELECTION)
+        xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='MINBANDWIDTH', value=MINBANDWIDTH)
+        xbmcaddon.Addon(id='inputstream.adaptive').setSetting(id='MAXBANDWIDTH', value=MAXBANDWIDTH)
 
 params=getParams()
 try: url=urllib.unquote_plus(params["url"])
@@ -100,6 +110,8 @@ elif mode == 2: SHAHID().browseCategorieShows(url)
 elif mode == 3: SHAHID().browseShows(url)
 elif mode == 4: SHAHID().browseSeasons(url)
 elif mode == 5: SHAHID().browseEpisodes(url)
+elif mode == 6: SHAHID().browseSearch()
+elif mode == 7: SHAHID().browseSeasonClips(url)
 elif mode == 9: SHAHID().playVideo(name, url)
 
 

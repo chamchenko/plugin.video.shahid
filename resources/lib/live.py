@@ -13,7 +13,7 @@ def getLive():
         title       = item['title']
         uuu         = item['productUrl']['url']
         chid        = item['id']
-        thumb       = item['thumbnailImage'].replace('{height}', '360').replace('{width}', '640').replace('{croppingPoint}', 'mc')
+        thumb       = item['thumbnailImage'].replace('{height}', '500').replace('{width}', '500').replace('{croppingPoint}', 'mc')
         urlp        = str(chid)
         infoLabels  = {"mediatype":"episodes","title":title,"TVShowTitle":title}
         infoArt     = {"thumb":thumb,"poster":thumb,"fanart":FANART,"icon":ICON,"logo":ICON}

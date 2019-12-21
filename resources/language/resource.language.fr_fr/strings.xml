@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="30001">Une Erreur est survenue, Veuillez réessayer...</string>
+    <string id="30002">Cacher les Clips</string>
+    <string id="40001">Direct</string>
+    <string id="40002">Série TV</string>
+    <string id="40003">Programmes TV</string>
+    <string id="40004">Recherche</string>
+    <string id="40005">Saison</string>
+    <string id="40006">Clips</string>
+    <string id="40007">Kids</string>
+</strings>

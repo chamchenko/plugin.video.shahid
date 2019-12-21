@@ -4,10 +4,6 @@ from vars import *
 from tools import log, uni
 from create_item import addDir, addLink
 
-TVSOWS_API      = API_Base + 'product/filter?filter=%s'
-PLAYLIST_API    = API_Base + 'product/playlist?request=%s'
-PLAYABLE_API    = API_Base + 'playableAsset?request=%s'
-
 
 def getCategories(url):
     log('getCategories')
@@ -15,20 +11,24 @@ def getCategories(url):
     items           = json.loads(url)
     url             = items['url']
     productSubType  = items['productSubType']
-    Response        = cacheURL(url, headers)
-    items           = json.loads(Response)
+    if productSubType == "": items = Kidslist
+    else:
+        Response    = cacheURL(url, headers)
+        items       = json.loads(Response)
     for item in items:
-        title               = item['name'].replace('Series - ', '').replace('Programs - ', '')
-        AR_title            = (item['displaytext'])
+        if xbmc.getLanguage(xbmc.ISO_639_1) == "ar":
+            title           = (item['displaytext'])
+        else:
+            title           = item['name'].replace('Series - ', '').replace('Programs - ', '').replace('-','').title()
         try:
             categoryID      = item['genreId']
             categoryID      = json.dumps({'genreId':categoryID,'productSubType':productSubType, "page":0, "category":title})
         except:
             categoryID      = item['dialectId']
             categoryID      = json.dumps({'dialectId':categoryID,'productSubType':productSubType, "page":0, "category":title})
-        infoLabels          = {"mediatype":"episode","title":AR_title,"TVShowTitle":AR_title}
-        infoArt             = {"thumb":ICON,"poster":ICON,"fanart":ICON,"icon":ICON,"logo":ICON}
-        addDir(AR_title, categoryID, 3, infoArt, infoLabels )
+        infoLabels          = {"mediatype":"episode","title":title,"TVShowTitle":title}
+        infoArt             = {"thumb":ICON,"poster":ICON,"fanart":FANART,"icon":ICON,"logo":ICON}
+        addDir(title, categoryID, 3, infoArt, infoLabels )
 
 def getShowsFromPage(items,page):
     log('getShowsFromPage')
@@ -37,7 +37,9 @@ def getShowsFromPage(items,page):
         productSubType  = items['productSubType']
         filterstring    = 'genres'
         category        = items['category']
-        filters         = json.dumps({filterstring:[categoryID],"pageNumber":page,"pageSize":22,"productType":"SHOW","productSubType":productSubType,"sorts":[{"order":"DESC","type":"SORTDATE"}]})
+        filters         = json.loads(json.dumps({filterstring:[categoryID],"pageNumber":page,"pageSize":22,"productType":"SHOW","productSubType":productSubType,"sorts":[{"order":"DESC","type":"SORTDATE"}]}))
+        if productSubType == "": del filters['productSubType']
+        filters         = json.dumps(filters)
         nexpage         = json.dumps({'genreId':categoryID,'productSubType':productSubType, "page":page+1, "category":category})
     except:
         categoryID      = items['dialectId']
@@ -86,12 +88,13 @@ def getSeasons(showId):
     xbmcplugin.setContent(int(sys.argv[1])    , 'episodes')
     for item in items:
         seasonNumb  = item['seasonNumber']
-        title       = "Season %s"%seasonNumb
+        title       = LANGUAGE(40005)+" "+seasonNumb
         seasonId    = item['id']
         filters     = json.dumps({"seasonId":seasonId})
         query       = urllib.quote(filters)
         Response    = cacheURL(PLAYABLE_API%query, headers)
         items       = json.loads(Response)['productModel']
+        TVShowTitle = items['show']['title']
         if str(items['show']['season']['pricingPlans'][0]['availability']['plus']) != "True":
             playListId  = items['playlist']['id']
             thumb       = items['show']['season']['image']['heroSliderImage'].replace('{height}', '180').replace('{width}', '320').replace('{croppingPoint}', 'mc')
@@ -102,14 +105,21 @@ def getSeasons(showId):
             fanart      = thumb.split('?')[0]
             aired       = items['createdDate'].split('T')[0]
             playListId  = json.dumps({'playListId':playListId, 'page':0})
-            infoLabels  = {"mediatype":"episode","title":title, "TVShowTitle":title}
+            infoLabels  = {"mediatype":"episode","title":title, "TVShowTitle":TVShowTitle}
             infoArt     = {"thumb":thumb,"poster":thumb,"fanart":fanart,"icon":ICON,"logo":ICON}
             addDir(title, playListId, 5, infoArt, infoLabels )
-    xbmc.executebuiltin('Container.SetSortMethod(23)')
+        if not Hide_Clips:
+            playlists=json.loads('[]')
+            for playlist in items['show']['season']['playlists']:
+                if playlist['type'] == "CLIP" and playlist['count'] != 0 :
+                    playlists.append({'title': playlist['title'],'playListId':playlist['id'],'thumb':thumb,'fanart':fanart})
+            title       = LANGUAGE(40006)+" - "+LANGUAGE(40005)+" "+seasonNumb
+            infoLabels  = {"mediatype":"episode","title":title, "TVShowTitle":title}
+            infoArt     = {"thumb":thumb,"poster":thumb,"fanart":fanart,"icon":ICON,"logo":ICON}
+            addDir(title, json.dumps(playlists), 7, infoArt, infoLabels )
 
 def getEpisodesFromPage(playListId,page):
     log('getEpisodesFromPage')
-    playoutURL  = 'https://api2.shahid.net/proxy/v2/playout/url/%s'
     headers     = {'User-Agent': USER_AGENT}
     filters     = json.dumps({"playListId":playListId,"pageNumber":page,"pageSize":30,"sorts":[{"order":"ASC","type":"SORTDATE"}]})
     query       = urllib.quote(filters)
@@ -118,7 +128,7 @@ def getEpisodesFromPage(playListId,page):
     xbmcplugin.setContent(int(sys.argv[1])    , 'episodes')
     hasMore     = str(items['hasMore'])
     for item in items['products']:
-        ide         = item['id']
+        streamId    = str(item['id'])
         showTitle   = item['show']['title']
         title       = item['title']
         thumb       = item['image']['thumbnailImage'].replace('{height}', '180').replace('{width}', '320').replace('{croppingPoint}', 'mc')
@@ -126,11 +136,16 @@ def getEpisodesFromPage(playListId,page):
         seasonNumb  = item['show']['season']['seasonNumber']
         duration    = item['duration']
         aired       = str(item['createdDate'].split('T')[0])
-        urlp        = str(ide)
-        seinfo      = ('S' + ('0' if int(seasonNumb) < 10 else '') + str(seasonNumb) + 'E' + ('0' if int(episodeNumb) < 10 else '') + str(episodeNumb))
-        infoLabels  = {"mediatype":"episode","title":showTitle.encode('utf-8','ignore'), "aired":aired, "duration":duration, "TVShowTitle":title, "season":seasonNumb, "episode":episodeNumb}
+        if item['assetType'] == "EPISODE":
+            seinfo      = (str(seasonNumb) + 'x' + ('0' if int(episodeNumb) < 10 else '') + str(episodeNumb)+'.')
+            title       = seinfo+' '+showTitle
+            infoLabels  = {"mediatype":"episode","title":title, "aired":aired, "duration":duration, "TVShowTitle":showTitle, "season":seasonNumb, "episode":episodeNumb}
+        else:
+            if title == "": title = unicode( xbmc.getInfoLabel('ListItem.Title'), "utf-8" ) +" "+str(episodeNumb)
+            infoLabels  = {"mediatype":"episode","title":title, "aired":aired, "duration":duration, "TVShowTitle":showTitle}
         infoArt     = {"thumb":thumb,"poster":thumb,"fanart":FANART,"icon":ICON,"logo":ICON}
-        addLink(title, urlp, 9, infoLabels, infoArt, len(items))
+        xbmc.executebuiltin('Container.SetSortMethod(7)')
+        addLink(title, streamId, 9, infoLabels, infoArt, len(items))
     return hasMore
 
 
@@ -143,4 +158,17 @@ def getEpisodes(playListId):
     while hasMore == "True":
         hasMore = getEpisodesFromPage(playListId,page)
         page    = page+1
-    xbmc.executebuiltin('Container.SetSortMethod(23)')
+    xbmc.executebuiltin('Container.SetSortMethod(7)')
+
+def getSeasonClips(playlists):
+    log('getSeasonClips')
+    xbmcplugin.setContent(int(sys.argv[1])    , 'episodes')
+    for playlist in json.loads(playlists):
+        title       = playlist['title']
+        playListId  = playlist['playListId']
+        thumb       = playlist['thumb']
+        fanart      = playlist['fanart']
+        playListId  = json.dumps({'playListId':playListId, 'page':0})
+        infoLabels  = {"mediatype":"episode","title":title, "TVShowTitle":title}
+        infoArt     = {"thumb":thumb,"poster":thumb,"fanart":fanart,"icon":ICON,"logo":ICON}
+        addDir(title, playListId, 5, infoArt, infoLabels )

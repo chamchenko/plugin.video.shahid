@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-    <setting id="Quality"  type="labelenum"    label="30002" default="Dialog" values="1080p|720p|576p|468p|360p|252p|144p|Dialog"/>
+    <setting id="Quality"       type="labelenum"    label="30002" default="Dialog" values="1080p|720p|576p|468p|360p|252p|144p|Dialog"/>
+    <setting id="Hide_Clips"    type="bool"         label="30003" default="false"/>
 </settings>

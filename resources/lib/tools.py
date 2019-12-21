@@ -30,7 +30,7 @@ def getBitrate(HLSRAW,drm):
     return bitrate
 
 
-        
+
 #to use if inputstream adaptive is not installed
 def getPlaybackURL(HLSRAW,burl):
     playbackURL= ""
