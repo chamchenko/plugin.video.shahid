@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-    <setting id="Quality"       type="labelenum"    label="30002" default="Dialog" values="1080p|720p|576p|468p|360p|252p|144p|Dialog"/>
-    <setting id="Hide_Clips"    type="bool"         label="30003" default="false"/>
+    <category label="General">
+        <setting id="Debugging" type="bool" label="30000"  default="false" />
+        <setting id="Mode_Kids" type="bool" label="30006" default="false"/>
+        <setting id="Category_Mode" type="labelenum" label="30005" default="Genre" values="Genre|Dialect"/>
+        <setting id="Hide_Clips" type="bool" label="30003" default="false"/>
+        <setting id="Hide_Premium" type="bool" label="30004" default="false"/>
+    </category>
 </settings>

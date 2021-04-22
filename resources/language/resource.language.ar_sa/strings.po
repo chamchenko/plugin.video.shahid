@@ -1,0 +1,83 @@
+# -*- coding: utf-8 -*-
+# Copyright: (c) 2016, Chamchenko
+# GNU General Public License v2.0+ (see LICENSE.txt or https://www.gnu.org/licenses/gpl-2.0.txt)
+# This file is part of plugin.video.shahid
+
+
+msgid ""
+msgstr ""
+"Project-Id-Version: plugin.video.shahid\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+
+msgctxt "#30000"
+msgid "Enable Debugging [Log errors]"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Something went wrong, Try again..."
+msgstr "..حصل خطأ..الرجاء المحاولة مرة أخرى"
+
+msgctxt "#30002"
+msgid "Quality"
+msgstr "جودة الصورة"
+
+msgctxt "#30003"
+msgid "Hide Clips"
+msgstr "إخفاء الكليبات"
+
+msgctxt "#30004"
+msgid "Hide Premium Content"
+msgstr "إخفاء المحتوى الخاص بالمشتركين"
+
+msgctxt "#30005"
+msgid "Category Sorting Mode"
+msgstr "طريقة عرض الفئات"
+
+msgctxt "#30002"
+msgid "Select Preferred Quality"
+msgstr "اختر جودة الصورة"
+
+msgctxt "#30006"
+msgid "Mode Kids"
+msgstr "وضع الاطفال"
+
+
+msgctxt "#30101"
+msgid "Live TV"
+msgstr "المباشر"
+
+msgctxt "#30102"
+msgid "TV Shows"
+msgstr "المسلسلات"
+
+msgctxt "#30103"
+msgid "TV Programs"
+msgstr "البرامج"
+
+msgctxt "#30104"
+msgid "Search"
+msgstr "بحث"
+
+msgctxt "#30105"
+msgid "Season"
+msgstr "الموسم"
+
+msgctxt "#30106"
+msgid "Clips"
+msgstr "كليبات"
+
+msgctxt "#30107"
+msgid "Kids"
+msgstr "اطفال"
+
+msgctxt "#30108"
+msgid "Premium"
+msgstr "للمشتركين"

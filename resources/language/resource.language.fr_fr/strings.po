@@ -1,0 +1,79 @@
+# -*- coding: utf-8 -*-
+# Copyright: (c) 2016, Chamchenko
+# GNU General Public License v2.0+ (see LICENSE.txt or https://www.gnu.org/licenses/gpl-2.0.txt)
+# This file is part of plugin.video.shahid
+
+
+msgid ""
+msgstr ""
+"Project-Id-Version: plugin.video.shahid\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+
+msgctxt "#30000"
+msgid "Enable Debugging [Log errors]"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Something went wrong, Try again..."
+msgstr "Une Erreur est survenue, Veuillez réessayer..."
+
+msgctxt "#30002"
+msgid "Quality"
+msgstr "Qualité"
+
+msgctxt "#30003"
+msgid "Hide Clips"
+msgstr "Cacher les Clips"
+
+msgctxt "#30004"
+msgid "Hide Premium Content"
+msgstr "Cacher le contenu Premium"
+
+msgctxt "#30005"
+msgid "Category Sorting Mode"
+msgstr "Mode de triage"
+
+msgctxt "#30006"
+msgid "Mode Kids"
+msgstr "Mode Kids"
+
+
+msgctxt "#30101"
+msgid "Live TV"
+msgstr "Direct"
+
+msgctxt "#30102"
+msgid "TV Shows"
+msgstr "Série TV"
+
+msgctxt "#30103"
+msgid "TV Programs"
+msgstr "Programmes TV"
+
+msgctxt "#30104"
+msgid "Search"
+msgstr "Recherche"
+
+msgctxt "#30105"
+msgid "Season"
+msgstr "Saison"
+
+msgctxt "#30106"
+msgid "Clips"
+msgstr "Clips"
+
+msgctxt "#30107"
+msgid "Kids"
+msgstr "Kids"
+
+msgctxt "#30108"
+msgid "Premium"
+msgstr "Premium"

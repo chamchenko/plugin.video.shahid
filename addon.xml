@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.shahid" version="0.1.0" name="SHAHED" provider-name="CHAMCHENKO">
+<addon id="plugin.video.shahid" version="0.1.1~beta01" name="SHAHED" provider-name="CHAMCHENKO">
     <requires>
-        <import addon="xbmc.python" version="2.25.0"/>
-        <import addon="script.module.simplecache" version="1.0.0"/>
+        <import addon="script.module.codequick" version="0.9.13"/>
+        <import addon="script.module.future" version="0.17.1"/>
+        <import addon="script.module.inputstreamhelper" version="0.3.3"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
@@ -12,17 +13,19 @@
         <description lang="en_GB"></description>
         <description lang="en_GB">Kodi add-on for watching videos from shahid.mbc.net</description>
         <platform>all</platform>
-        <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
-        <source>https://github.com/CHAMCHENKO/KODI_Addons/tree/master/plugin.video.shahid</source>
+        <language>en</language>
+        <license>GPL-2.0</license>
+        <source>https://github.com/chamchenko/plugin.video.shahid</source>
         <website>https://shahid.mbc.net/</website>
         <assets>
-            <icon>resources/images/icon.png</icon>
-            <fanart>resources/images/fanart.jpg</fanart>
-            <screenshot>resources/images/screenshot000.jpg</screenshot>
-            <screenshot>resources/images/screenshot001.jpg</screenshot>
-            <screenshot>resources/images/screenshot002.jpg</screenshot>
-            <screenshot>resources/images/screenshot003.jpg</screenshot>
-            <screenshot>resources/images/screenshot004.jpg</screenshot>
+            <icon>resources/media/icon.png</icon>
+            <fanart>resources/media/fanart.jpg</fanart>
+            <screenshot>resources/media/screenshot000.jpg</screenshot>
+            <screenshot>resources/media/screenshot001.jpg</screenshot>
+            <screenshot>resources/media/screenshot002.jpg</screenshot>
+            <screenshot>resources/media/screenshot003.jpg</screenshot>
+            <screenshot>resources/media/screenshot004.jpg</screenshot>
         </assets>
+        <reuselanguageinvoker>true</reuselanguageinvoker>
     </extension>
 </addon>
