@@ -45,6 +45,7 @@ def BROWSE_MOVIES(plugin, url, **kwargs):
     productType = 'MOVIE'
     page = 0
     hasMore = "True"
+    added = 0
     while hasMore == "True":
         plugin.log('page: %s' % page, lvl=plugin.DEBUG)
         filters = {
@@ -90,6 +91,14 @@ def BROWSE_MOVIES(plugin, url, **kwargs):
             liz.info['plot'] = ensure_native_str(plot)
             liz.set_callback(play_video, url=movieId)
             plugin.log('Adding: %s' % title, lvl=plugin.DEBUG)
+            added = added + 1
             yield liz
         page = page+1
-
+    if added == 0:
+        plugin.notify(
+                        'Notice',
+                        'This Section is empty or contain premium content only',
+                        display_time=5000,
+                        sound=True
+                    )
+        yield False

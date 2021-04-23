@@ -63,6 +63,7 @@ def BROWSE_TVSHOWS(plugin, genreId, productSubType, **kwargs):
     productType = 'SHOW'
     page = 0
     hasMore = "True"
+    added = 0
     while hasMore == "True":
         plugin.log('page: %s' % page, lvl=plugin.DEBUG)
         filters = {
@@ -107,8 +108,17 @@ def BROWSE_TVSHOWS(plugin, genreId, productSubType, **kwargs):
             liz.info['plot'] = ensure_native_str(plot)
             liz.set_callback(BROWSE_SEASONS, url=showId)
             plugin.log('Adding: %s' % title, lvl=plugin.DEBUG)
+            added = added + 1
             yield liz
         page = page+1
+    if added == 0:
+        plugin.notify(
+                        'Notice',
+                        'This Section is empty or contain premium content only',
+                        display_time=5000,
+                        sound=True
+                     )
+        yield False
 
 
 @Route.register(autosort=False, content_type="seasons")

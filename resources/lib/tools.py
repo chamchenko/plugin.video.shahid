@@ -3,7 +3,7 @@
 # GNU General Public License v2.0+ (see LICENSE.txt or https://www.gnu.org/licenses/gpl-2.0.txt)
 # This file is part of plugin.video.shahid
 
-from __future__ import unicode_literals
+from codequick.utils import ensure_native_str
 try:
     from urllib.parse import quote
     from urllib.parse import quote_plus
@@ -31,28 +31,8 @@ def formatimg(URL, TYPE):
     if TYPE == 'icon':
         height = 250
         width = 250
-    URL = URL.format(height = height, width = width, croppingPoint = croppingPoint)
+    URL = ensure_native_str(URL.format(height = height, width = width, croppingPoint = croppingPoint), 'utf-8')
     # in some case the api is returning a faulty url
     if not '/mediaObject' in URL:
         URL = URL.replace('mediaObject', '/mediaObject')
     return quote(URL, safe='&?=:/')
-
-
-def getBitrate(HLSRAW, drm, QUALITY):
-    if not 'x%s'%QUALITY in HLSRAW:
-        pattern = ',RESOLUTION\=.*x([0-9]+)'
-        availables = re.findall(pattern, HLSRAW)
-        QUALITY = 0
-        for quality in availables:
-            if quality > QUALITY:
-                QUALITY = quality
-    try:
-        pattern = '(Bitrate\=\")([0-9]+)\".*(MaxHeight\=\"%s)'%QUALITY
-        bitrate = int(re.findall(pattern, HLSRAW)[0][1])
-    except:
-        try:
-            pattern = 'BANDWIDTH\=([0-9]+)(.*\,RESOLUTION\=.*x%s)'%QUALITY
-            bitrate = int(re.findall(pattern, HLSRAW)[0][0])
-        except:
-            bitrate = None
-    return bitrate

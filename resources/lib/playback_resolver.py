@@ -25,19 +25,18 @@ def play_video(plugin, url, **kwargs):
             plugin.notify(
                             'Playback error',
                             'Premium Video',
-                            icon=plugin.NOTIFY_ERROR,
                             display_time=5000,
                             sound=True
                          )
         return False
-    jsonstr = json.loads(Response.text)
+    jsonstr = Response.json()
     video_url = jsonstr['playout']['url']
     drm = jsonstr['playout']['drm']
     plugin.log('Playing: %s' % video_url, lvl=plugin.DEBUG)
     item = Listitem()
     item.path = video_url
     item.property[INPUTSTREAM_PROP] ='inputstream.adaptive'
-    if drm and 'm3u8' not in playbackURL:
+    if drm and 'm3u8' not in video_url:
         is_helper = inputstreamhelper.Helper('ism', drm='com.widevine.alpha')
         if is_helper.check_inputstream():
             filters = json.dumps({"assetId":streamId}, separators=(',', ':'))
@@ -48,8 +47,8 @@ def play_video(plugin, url, **kwargs):
                         'SHAHID_OS': 'LINUX',
                         'BROWSER_VERSION': '79.0'
                       }
-            Response = urlquick.get(requrl, params=params, headers=headers).text
-            licenceurl = json.loads(Response)['signature']
+            Response = urlquick.get(requrl, params=params, headers=headers).json()
+            licenceurl = Response['signature']
             authority = 'shahiddotnet.keydelivery.westeurope.media.azure.net'
             URL_LICENCE_KEY = '%s|authority=%s&origin=%s&User-Agent=%s&referer=%s|R{SSM}|'%(licenceurl,authority,BASE_URL,USER_AGENT,BASE_URL)
             item.property['inputstream.adaptive.manifest_type'] = 'ism'
