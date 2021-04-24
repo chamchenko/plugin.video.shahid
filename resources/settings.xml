@@ -7,4 +7,12 @@
         <setting id="Hide_Clips" type="bool" label="30003" default="false"/>
         <setting id="Hide_Premium" type="bool" label="30004" default="false"/>
     </category>
+    <category label="Account">
+        <setting id="username"   type="text" label="Email" default="" subsetting="true"/>
+        <setting id="password"   type="text" label="Password" default="" subsetting="true" option="hidden"/>
+        <setting id="encryptedpass" type="text" label="Encrypted Password" default="" option="hidden" enable="false"/>
+    </category>
+    <category label="Advanced">
+        <setting label="Clear Cache" type="action" action="RunPlugin(plugin://plugin.video.shahid/resources/lib/addon_utils/clear_cache/)"/>
+    </category>    
 </settings>

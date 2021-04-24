@@ -33,16 +33,28 @@ CATEGORY_MODE = Settings.get_string('Category_Mode')
 
 
 #Web related
-USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36'
-BASE_URL = "https://api2.shahid.net/proxy/v2/"
-URL_CONSTRUCTOR = urljoin_partial(BASE_URL)
+USER_AGENT = 'Shahid/3660 CFNetwork/1220.1 Darwin/20.3.0'
+SHAHID_AGENT = 'Shahid/6.8.3.3660 CFNetwork/1220.1 Darwin/20.3.0 (iPhone/6s iOS/14.4) Safari/604.1'
+
+PROXY_BASE_URL = "https://api2.shahid.net/proxy"
+BASE_URL_V2 = PROXY_BASE_URL + "/v2/"
+BASE_URL_V2_1 = PROXY_BASE_URL + "/v2.1/"
+URL_CONSTRUCTOR = urljoin_partial(BASE_URL_V2)
+URL_CONSTRUCTOR_V2_1 = urljoin_partial(BASE_URL_V2_1)
 URL_LIVE = URL_CONSTRUCTOR('product/filter')
-PLAYOUT_URL = URL_CONSTRUCTOR('playout/new/url/')
+
 TVSOWS_API = URL_CONSTRUCTOR('product/filter')
 MOVIE_API = URL_CONSTRUCTOR('product/id')
 PLAYABLE_API = URL_CONSTRUCTOR('playableAsset')
 PLAYLIST_API = URL_CONSTRUCTOR('product/playlist')
 SEARCH_URL = URL_CONSTRUCTOR('search/grid')
 DRM_URL = URL_CONSTRUCTOR('playout/new/drm')
+LOGIN_TOKEN_URL = URL_CONSTRUCTOR('session/web')
+SESSION_TOKEN_URL = URL_CONSTRUCTOR('session/ios')
+
+
+LOGIN_URL = URL_CONSTRUCTOR_V2_1('usersservice/validateLogin')
+PLAYOUT_URL = URL_CONSTRUCTOR_V2_1('playout/new/url/')
 
 SHOWS_PARAMS = {"page": 0,  "productType":"SHOW"}
+
