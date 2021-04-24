@@ -57,68 +57,64 @@ def CATEGORIES(plugin, TYPE='SERIES', KIDS=False, **kwargs):
 
 
 @Route.register(autosort=False, content_type="tvshows")
-def BROWSE_TVSHOWS(plugin, genreId, productSubType, **kwargs):
+def BROWSE_TVSHOWS(plugin, genreId, productSubType, page=0, **kwargs):
     plugin.log('BROWSE_TVSHOWS genreId: %s' % genreId, lvl=plugin.DEBUG)
     plugin.log('BROWSE_TVSHOWS productSubType: %s' % productSubType, lvl=plugin.DEBUG)
     productType = 'SHOW'
-    page = 0
     hasMore = "True"
-    added = 0
-    while hasMore == "True":
-        plugin.log('page: %s' % page, lvl=plugin.DEBUG)
-        filters = {
-                    "pageNumber": page,
-                    "pageSize": 30,
-                    "productType": productType,
-                    "productSubType": productSubType,
-                    "sorts": [{"order": "DESC", "type": "SORTDATE"}]
-                  }
-        if genreId:
-            if CATEGORY_MODE == "Dialect":
-                filters.update({"dialect": genreId})
-            elif CATEGORY_MODE == "Genre":
-                filters.update({"genres": [genreId]})
-        if not productSubType:
-            del filters['productSubType']
-        filters = json.dumps(filters, separators=(',', ':'))
-        params = urlencode({'filter': filters})
-        headers = {'User-Agent': USER_AGENT}
-        plugin.log('Fetching url: %s' % TVSOWS_API, lvl=plugin.DEBUG)
-        plugin.log('Fetching params: %s' % params, lvl=plugin.DEBUG)
-        Response = urlquick.get(TVSOWS_API, params=params, headers=headers).json()
-        items = Response['productList']
-        hasMore = str(items['hasMore'])
-        for item in items['products']:
-            title = item['title']
-            plot = item['description']
-            if item['pricingPlans'][0]['availability']:
-                if item['pricingPlans'][0]['availability']['plus']:
-                    if HIDE_PREMIUM:
-                        continue
-                    title += ' |Premium|'
-                    plot = '[Premium]\n' + plot 
-            showId = item['id']
-            liz = Listitem()
-            liz.label = ensure_native_str(title)
-            liz.info['mediatype'] = "tvshow"
-            liz.art["poster"] = formatimg(item['image']['posterImage'], 'poster')
-            liz.art["fanart"] = formatimg(item['image']['thumbnailImage'], 'fanart')
-            aired = str(item['createdDate'].split('T')[0])
-            liz.info.date(aired, "%Y-%m-%d")
-            liz.info['plot'] = ensure_native_str(plot)
-            liz.set_callback(BROWSE_SEASONS, url=showId)
-            plugin.log('Adding: %s' % title, lvl=plugin.DEBUG)
-            added = added + 1
-            yield liz
-        page = page+1
-    if added == 0:
-        plugin.notify(
-                        'Notice',
-                        'This Section is empty or contain premium content only',
-                        display_time=5000,
-                        sound=True
-                     )
-        yield False
+    plugin.log('page: %s' % page, lvl=plugin.DEBUG)
+    filters = {
+                "pageNumber": page,
+                "pageSize": 30,
+                "productType": productType,
+                "productSubType": productSubType,
+                "sorts": [{"order": "DESC", "type": "SORTDATE"}]
+              }
+    if genreId:
+        if CATEGORY_MODE == "Dialect":
+            filters.update({"dialect": genreId})
+        elif CATEGORY_MODE == "Genre":
+            filters.update({"genres": [genreId]})
+    if not productSubType:
+        del filters['productSubType']
+    filters = json.dumps(filters, separators=(',', ':'))
+    params = urlencode({'filter': filters})
+    headers = {'User-Agent': USER_AGENT}
+    plugin.log('Fetching url: %s' % TVSOWS_API, lvl=plugin.DEBUG)
+    plugin.log('Fetching params: %s' % params, lvl=plugin.DEBUG)
+    Response = urlquick.get(TVSOWS_API, params=params, headers=headers).json()
+    items = Response['productList']
+    hasMore = items['hasMore']
+    for item in items['products']:
+        title = item['title']
+        plot = item['description']
+        if item['pricingPlans'][0]['availability']:
+            if item['pricingPlans'][0]['availability']['plus']:
+                if HIDE_PREMIUM:
+                    continue
+                title += ' |Premium|'
+                plot = '[Premium]\n' + plot 
+        showId = item['id']
+        liz = Listitem()
+        liz.label = ensure_native_str(title)
+        liz.info['mediatype'] = "tvshow"
+        liz.art["poster"] = formatimg(item['image']['posterImage'], 'poster')
+        liz.art["fanart"] = formatimg(item['image']['thumbnailImage'], 'fanart')
+        aired = str(item['createdDate'].split('T')[0])
+        liz.info.date(aired, "%Y-%m-%d")
+        liz.info['plot'] = ensure_native_str(plot)
+        liz.set_callback(BROWSE_SEASONS, url=showId)
+        plugin.log('Adding: %s' % title, lvl=plugin.DEBUG)
+        yield liz
+    
+    if hasMore:
+        page = int(page)+1
+        yield Listitem.next_page(
+                                    genreId=genreId,
+                                    productSubType=productSubType,
+                                    page=str(page)
+                                )
+        
 
 
 @Route.register(autosort=False, content_type="seasons")

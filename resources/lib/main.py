@@ -100,12 +100,11 @@ def KIDS_MENU(plugin):
                             )
 
 
-@Route.register(autosort=False)
-def SEARCH_CONTENT(plugin, search_query, **kwargs):
+@Route.register(autosort=False, content_type="movies")
+def SEARCH_CONTENT(plugin, search_query, page=0, **kwargs):
     plugin.add_sort_methods(xbmcplugin.SORT_METHOD_UNSORTED)
     plugin.log('SEARCH_CONTENT', lvl=plugin.DEBUG)
     headers = {'User-Agent': USER_AGENT}
-    page = 0
     filters = json.dumps({
                             "name": search_query,
                             "pageNumber": page,
@@ -116,6 +115,7 @@ def SEARCH_CONTENT(plugin, search_query, **kwargs):
     plugin.log('Fetching params: %s' % params, lvl=plugin.DEBUG)
     Response = urlquick.get(SEARCH_URL, params=params, headers=headers).json()
     items = Response['productList']
+    hasMore = items['hasMore']
     for item in items['products']:
         title = item['title']
         plot = item['description']
@@ -146,3 +146,11 @@ def SEARCH_CONTENT(plugin, search_query, **kwargs):
             liz.set_callback(BROWSE_SEASONS, url=itemId)            
         plugin.log('Adding: %s' % title, lvl=plugin.DEBUG)
         yield liz
+
+    if hasMore:
+        page = int(page)+1
+        yield Listitem.next_page(
+                                    search_query=search_query,
+                                    page=str(page)
+                                )
+        yield False

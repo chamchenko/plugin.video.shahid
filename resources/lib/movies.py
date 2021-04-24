@@ -29,76 +29,69 @@ def CATEGORIES_M(plugin, TYPE='SERIES', **kwargs):
 
     for genre in genre_list:
         title = genre['title']
-        url = genre['id']
+        genreId = genre['id']
         item = Listitem()
         item.label = title
         item.info['mediatype'] = "episode"
-        item.set_callback(BROWSE_MOVIES, url=url)
+        item.set_callback(BROWSE_MOVIES, genreId=genreId)
         plugin.log('Adding: %s' % title, lvl=plugin.DEBUG)
         yield item
 
 
 @Route.register(autosort=False, content_type="movies")
-def BROWSE_MOVIES(plugin, url, **kwargs):
-    plugin.log('BROWSE_MOVIES URL: %s' % url, lvl=plugin.DEBUG)
-    genreId = url
+def BROWSE_MOVIES(plugin, genreId, page=0, **kwargs):
+    plugin.log('BROWSE_MOVIES genreId: %s' % genreId, lvl=plugin.DEBUG)
     productType = 'MOVIE'
-    page = 0
-    hasMore = "True"
-    added = 0
-    while hasMore == "True":
-        plugin.log('page: %s' % page, lvl=plugin.DEBUG)
-        filters = {
-                    "pageNumber": page,
-                    "pageSize": 30,
-                    "productType": productType,
-                    "sorts": [{"order": "DESC", "type": "SORTDATE"}]
-                  }
-        if genreId:
-            if CATEGORY_MODE == "Dialect":
-                filters.update({"dialect": genreId})
-            elif CATEGORY_MODE == "Genre":
-                filters.update({"genres": [genreId]})
-        filters = json.dumps(filters, separators=(',', ':'))
-        params = urlencode({'filter': filters})
-        headers = {'User-Agent': USER_AGENT}
-        plugin.log('Fetching url: %s' % TVSOWS_API, lvl=plugin.DEBUG)
-        plugin.log('Fetching params: %s' % params, lvl=plugin.DEBUG)
-        Response = urlquick.get(TVSOWS_API, params=params, headers=headers).json()
-        items = Response['productList']
-        hasMore = str(items['hasMore'])
-        for item in items['products']:
-            title = item['title']
-            plot = item['description']
-            if item['pricingPlans'][0]['availability']:
-                movieId = item['id']
-                if item['pricingPlans'][0]['availability']['plus']:
-                    if HIDE_PREMIUM:
-                        continue
-                    title += ' |Premium|'
-                    plot = '[Premium]\n' + plot
-            # if not available assume it's comming soon and return the trailer
-            else:
-                title += ' |Trailer|'
-                movieId = item['trailerItem']['id']
-            liz = Listitem()
-            aired = str(item['createdDate'].split('T')[0])
-            liz.label = ensure_native_str(title)
-            liz.info['mediatype'] = "movie"
-            liz.art["poster"] = formatimg(item['image']['posterImage'], 'poster')
-            liz.art["fanart"] = formatimg(item['image']['thumbnailImage'], 'fanart')
-            liz.info.date(aired, "%Y-%m-%d")
-            liz.info['plot'] = ensure_native_str(plot)
-            liz.set_callback(play_video, url=movieId)
-            plugin.log('Adding: %s' % title, lvl=plugin.DEBUG)
-            added = added + 1
-            yield liz
-        page = page+1
-    if added == 0:
-        plugin.notify(
-                        'Notice',
-                        'This Section is empty or contain premium content only',
-                        display_time=5000,
-                        sound=True
-                    )
+    plugin.log('page: %s' % page, lvl=plugin.DEBUG)
+    filters = {
+                "pageNumber": page,
+                "pageSize": 30,
+                "productType": productType,
+                "sorts": [{"order": "DESC", "type": "SORTDATE"}]
+              }
+    if genreId:
+        if CATEGORY_MODE == "Dialect":
+            filters.update({"dialect": genreId})
+        elif CATEGORY_MODE == "Genre":
+            filters.update({"genres": [genreId]})
+    filters = json.dumps(filters, separators=(',', ':'))
+    params = urlencode({'filter': filters})
+    headers = {'User-Agent': USER_AGENT}
+    plugin.log('Fetching url: %s' % TVSOWS_API, lvl=plugin.DEBUG)
+    plugin.log('Fetching params: %s' % params, lvl=plugin.DEBUG)
+    Response = urlquick.get(TVSOWS_API, params=params, headers=headers).json()
+    items = Response['productList']
+    hasMore = items['hasMore']
+    for item in items['products']:
+        title = item['title']
+        plot = item['description']
+        if item['pricingPlans'][0]['availability']:
+            movieId = item['id']
+            if item['pricingPlans'][0]['availability']['plus']:
+                if HIDE_PREMIUM:
+                    continue
+                title += ' |Premium|'
+                plot = '[Premium]\n' + plot
+        # if not available assume it's comming soon and return the trailer
+        else:
+            title += ' |Trailer|'
+            movieId = item['trailerItem']['id']
+        liz = Listitem()
+        aired = str(item['createdDate'].split('T')[0])
+        liz.label = ensure_native_str(title)
+        liz.info['mediatype'] = "movie"
+        liz.art["poster"] = formatimg(item['image']['posterImage'], 'poster')
+        liz.art["fanart"] = formatimg(item['image']['thumbnailImage'], 'fanart')
+        liz.info.date(aired, "%Y-%m-%d")
+        liz.info['plot'] = ensure_native_str(plot)
+        liz.set_callback(play_video, url=movieId)
+        plugin.log('Adding: %s' % title, lvl=plugin.DEBUG)
+        yield liz
+
+    if hasMore:
+        page = int(page)+1
+        yield Listitem.next_page(
+                                    genreId=genreId,
+                                    page=str(page)
+                                )
         yield False
