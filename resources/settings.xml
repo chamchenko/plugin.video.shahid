@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-    <category label="General">
-        <setting id="Debugging" type="bool" label="30000"  default="false" />
-        <setting id="Mode_Kids" type="bool" label="30006" default="false"/>
-        <setting id="Category_Mode" type="labelenum" label="30005" default="Genre" values="Genre|Dialect"/>
+    <category label="30000">
+        <setting id="Movie_Category_Mode" type="labelenum" label="30001" default="Genre" values="Genre|Dialect"/>
+        <setting id="Show_Category_Mode" type="labelenum" label="30002" default="Genre" values="Genre|Dialect"/>
         <setting id="Hide_Clips" type="bool" label="30003" default="false"/>
+        <setting id="Mode_Kids" type="bool" label="30005" default="false"/>
+    </category>
+    <category label="30006">
         <setting id="Hide_Premium" type="bool" label="30004" default="false"/>
+        <setting id="username" type="text" label="30007" default="" enable="eq(-1,false)"/>
+        <setting id="password" type="text" label="30008" default="" option="hidden" enable="eq(-2,false)"/>
+        <setting id="encryptedpass" type="text" label="30009" default="" option="hidden" enable="false" subsetting="true"/>
     </category>
-    <category label="Account">
-        <setting id="username"   type="text" label="Email" default="" subsetting="true"/>
-        <setting id="password"   type="text" label="Password" default="" subsetting="true" option="hidden"/>
-        <setting id="encryptedpass" type="text" label="Encrypted Password" default="" option="hidden" enable="false"/>
+    <category label="30010">
+        <setting label="30011" type="action" action="RunPlugin(plugin://plugin.video.shahid/resources/lib/addon_utils/clear_cache/)"/>
+        <setting id="customlibraryfolder" type="folder" label="30012" default="special://profile/addon_data/plugin.video.shahid" source="auto" option="writeable"/>
     </category>
-    <category label="Advanced">
-        <setting label="Clear Cache" type="action" action="RunPlugin(plugin://plugin.video.shahid/resources/lib/addon_utils/clear_cache/)"/>
-    </category>    
 </settings>

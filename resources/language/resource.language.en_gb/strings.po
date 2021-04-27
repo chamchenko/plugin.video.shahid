@@ -16,17 +16,17 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-
+# Settings
 msgctxt "#30000"
-msgid "Enable Debugging [Log errors]"
+msgid "Content"
 msgstr ""
 
 msgctxt "#30001"
-msgid "Something went wrong, Try again..."
+msgid "Movies Category Mode"
 msgstr ""
 
 msgctxt "#30002"
-msgid "Quality"
+msgid "Shows Category Mode"
 msgstr ""
 
 msgctxt "#30003"
@@ -38,14 +38,52 @@ msgid "Hide Premium Content"
 msgstr ""
 
 msgctxt "#30005"
-msgid "Category Sorting Mode"
-msgstr ""
-
-msgctxt "#30006"
 msgid "Mode Kids"
 msgstr ""
 
+msgctxt "#30006"
+msgid "Account"
+msgstr ""
 
+
+msgctxt "#30007"
+msgid "Email"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Password"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Encrypted Password"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Advanced"
+msgstr ""
+
+msgctxt "#30011"
+msgid "Clear Cache"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Custom Library Folder"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Password"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Genre"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Dialect"
+msgstr ""
+
+
+# Menus
 msgctxt "#30101"
 msgid "Live TV"
 msgstr ""
@@ -59,21 +97,86 @@ msgid "TV Programs"
 msgstr ""
 
 msgctxt "#30104"
-msgid "Search"
+msgid "Movies"
 msgstr ""
 
 msgctxt "#30105"
-msgid "Season"
+msgid "My List"
 msgstr ""
 
 msgctxt "#30106"
-msgid "Clips"
+msgid "Season"
 msgstr ""
 
 msgctxt "#30107"
+msgid "Clips"
+msgstr ""
+
+
+
+# msgs
+msgctxt "#30201"
+msgid "Wrong Code"
+msgstr ""
+
+msgctxt "#30202"
+msgid "This Section is empty"
+msgstr ""
+
+msgctxt "#30203"
+msgid "Cache Cleared Successfully"
+msgstr ""
+
+msgctxt "#30204"
+msgid "Successfully Added to your List"
+msgstr ""
+
+msgctxt "#30205"
+msgid "Somthing Went Wrong, Please retry"
+msgstr ""
+
+msgctxt "#30206"
+msgid "Login Failed"
+msgstr ""
+
+msgctxt "#30207"
+msgid "Premium Video"
+msgstr ""
+
+msgctxt "#30208"
+msgid "Info"
+msgstr ""
+
+msgctxt "#30209"
+msgid "Error"
+msgstr ""
+
+msgctxt "#30210"
+msgid "Successfully Added to Library"
+msgstr ""
+
+msgctxt "#30211"
+msgid "Add To Library"
+msgstr ""
+
+msgctxt "#30212"
+msgid "Add To My List"
+msgstr ""
+
+
+#####
+msgctxt "#30301"
 msgid "Kids"
 msgstr ""
 
-msgctxt "#30108"
+msgctxt "#30302"
+msgid "Visitor"
+msgstr ""
+
+msgctxt "#30308"
 msgid "Premium"
+msgstr ""
+
+msgctxt "#30309"
+msgid "Trailer"
 msgstr ""

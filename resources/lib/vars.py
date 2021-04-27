@@ -3,58 +3,58 @@
 # GNU General Public License v2.0+ (see LICENSE.txt or https://www.gnu.org/licenses/gpl-2.0.txt)
 # This file is part of plugin.video.shahid
 
-from __future__ import unicode_literals
 
-import xbmcaddon
+import xbmc
+
 from codequick.utils import urljoin_partial
-from codequick.script import Settings
-from xbmc import getInfoLabel
+from codequick import Script
 
+
+
+XBMC_VERSION = int(xbmc.getInfoLabel("System.BuildVersion").split('-')[0].split('.')[0])
+INPUTSTREAM_PROP = 'inputstream' if XBMC_VERSION >= 19 else 'inputstreamaddon'
 
 #Add-on related
 ADDON_ID = 'plugin.video.shahid'
-REAL_SETTINGS = xbmcaddon.Addon(id=ADDON_ID)
-ADDON_NAME = REAL_SETTINGS.getAddonInfo('name')
-SETTINGS_LOC = REAL_SETTINGS.getAddonInfo('profile')
-ADDON_PATH = REAL_SETTINGS.getAddonInfo('path')
-ADDON_VERSION = REAL_SETTINGS.getAddonInfo('version')
-ICON = REAL_SETTINGS.getAddonInfo('icon')
-FANART = REAL_SETTINGS.getAddonInfo('fanart')
-XBMC_VERSION = int(getInfoLabel("System.BuildVersion").split('-')[0].split('.')[0])
-INPUTSTREAM_PROP = 'inputstream' if XBMC_VERSION >= 19 else 'inputstreamaddon'
-DEBUG = Settings.get_string('Debugging') == 'true'
-Hide_Clips = Settings.get_string('Hide_Clips') == 'true'
-HIDE_PREMIUM = Settings.get_string('Hide_Premium') == 'true'
-MODE_KIDS = Settings.get_string('Mode_Kids') == 'true'
-QUALITY = Settings.get_string('Quality').replace('p','')
-CATEGORY_MODE = Settings.get_string('Category_Mode')
-
-
-
+ADDON_NAME =Script.get_info('name')
+SETTINGS_LOC = Script.get_info('profile')
+ADDON_PATH = Script.get_info('path')
+ADDON_VERSION = Script.get_info('version')
+ICON = Script.get_info('icon')
+FANART = Script.get_info('fanart')
+Hide_Clips = Script.setting.get_boolean('Hide_Clips')
+HIDE_PREMIUM = Script.setting.get_boolean('Hide_Premium')
+MODE_KIDS = Script.setting.get_boolean('Mode_Kids')
+QUALITY = Script.setting.get_string('Quality').replace('p','')
+EMAIL = Script.setting.get_string('username')
+PASSWORD = Script.setting.get_string('password')
+Movie_Category_Mode = Script.setting.get_string('Movie_Category_Mode')
+Show_Category_Mode = Script.setting.get_string('Show_Category_Mode')
+language = xbmc.getLanguage(xbmc.ISO_639_1)
+if language != 'ar' and language != 'en':
+    language = 'en'
 
 #Web related
 USER_AGENT = 'Shahid/3660 CFNetwork/1220.1 Darwin/20.3.0'
 SHAHID_AGENT = 'Shahid/6.8.3.3660 CFNetwork/1220.1 Darwin/20.3.0 (iPhone/6s iOS/14.4) Safari/604.1'
 
-PROXY_BASE_URL = "https://api2.shahid.net/proxy"
-BASE_URL_V2 = PROXY_BASE_URL + "/v2/"
-BASE_URL_V2_1 = PROXY_BASE_URL + "/v2.1/"
-URL_CONSTRUCTOR = urljoin_partial(BASE_URL_V2)
-URL_CONSTRUCTOR_V2_1 = urljoin_partial(BASE_URL_V2_1)
-URL_LIVE = URL_CONSTRUCTOR('product/filter')
 
-TVSOWS_API = URL_CONSTRUCTOR('product/filter')
+PROXY_BASE_URL = "https://api2.shahid.net/proxy"
+URL_CONSTRUCTOR = urljoin_partial(PROXY_BASE_URL + "/v2/")
+AVATAR_URL = URL_CONSTRUCTOR('userprofile/profiles/avatar/')
 MOVIE_API = URL_CONSTRUCTOR('product/id')
-PLAYABLE_API = URL_CONSTRUCTOR('playableAsset')
-PLAYLIST_API = URL_CONSTRUCTOR('product/playlist')
-SEARCH_URL = URL_CONSTRUCTOR('search/grid')
 DRM_URL = URL_CONSTRUCTOR('playout/new/drm')
 LOGIN_TOKEN_URL = URL_CONSTRUCTOR('session/web')
 SESSION_TOKEN_URL = URL_CONSTRUCTOR('session/ios')
 
-
+URL_CONSTRUCTOR_V2_1 = urljoin_partial(PROXY_BASE_URL + "/v2.1/")
 LOGIN_URL = URL_CONSTRUCTOR_V2_1('usersservice/validateLogin')
-PLAYOUT_URL = URL_CONSTRUCTOR_V2_1('playout/new/url/')
-
-SHOWS_PARAMS = {"page": 0,  "productType":"SHOW"}
-
+PLAYOUT_URL = URL_CONSTRUCTOR_V2_1('playout/new/url/%s')
+PROFILES_URL = URL_CONSTRUCTOR_V2_1('userprofile/profiles/me')
+SEARCH_URL = URL_CONSTRUCTOR_V2_1('search/grid')
+ADD_TO_LIST_URL = URL_CONSTRUCTOR_V2_1('personalization/add/')
+MY_LIST_URL = URL_CONSTRUCTOR_V2_1('personalization/grid')
+TVSOWS_API = URL_CONSTRUCTOR_V2_1('product/filter')
+PLAYABLE_API = URL_CONSTRUCTOR_V2_1('playableAsset')
+PLAYLIST_API = URL_CONSTRUCTOR_V2_1('product/playlist')
+URL_LIVE = URL_CONSTRUCTOR_V2_1('product/filter')

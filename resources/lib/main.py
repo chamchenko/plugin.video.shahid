@@ -3,154 +3,202 @@
 # GNU General Public License v2.0+ (see LICENSE.txt or https://www.gnu.org/licenses/gpl-2.0.txt)
 # This file is part of plugin.video.shahid
 
-from __future__ import unicode_literals
 
-import json
-import urlquick
-import xbmcplugin
 
-from codequick import Route, Resolver, Listitem, run
-from codequick.utils import urljoin_partial, bold, ensure_native_str
+from codequick import run
+from codequick import Route
+from codequick import Listitem
+
+from codequick.utils import bold
+from codequick.utils import keyboard
+from random import choice
 from .tools import *
 from .vars import *
-
 from .movies import CATEGORIES_M
+from .movies import BROWSE_MOVIES
 from .tvshows import CATEGORIES
-from .tvshows import BROWSE_SEASONS
-from .playback_resolver import play_video
+from .tvshows import BROWSE_TVSHOWS
 from .live_tv import LIVE_TV
+from .mixed_content import SEARCH_CONTENT
+from .mixed_content import MY_LIST
 
 
 
-
-
-BASE_URL = "https://api2.shahid.net/proxy/v2/"
-url_constructor = urljoin_partial(BASE_URL)
-
-Live_TV = 30101
-TV_Shows = 30102
-TV_Programs = 30103
-Kids = 30107
-
-
-# noinspection PyUnusedLocal
 @Route.register
 def root(plugin):
-    if MODE_KIDS:
+    headers = get_headers()
+    if EMAIL and PASSWORD:
+        profiles_data = urlquick.get(PROFILES_URL, headers=headers, max_age=0).json()
+        pin = profiles_data['pinCode']
+    else:
+        pin = None
+        avatar_k = urlquick.get(AVATAR_URL+'kidsDefault').json()['avatars'][0]['url']
+        id_k = ''.join(choice('0123456789abcdef-') for n in range(36)).encode('utf-8')
+        avatar_a = urlquick.get(AVATAR_URL+'adultDefault').json()['avatars'][0]['url']
+        id_a = ''.join(choice('0123456789abcdef-') for n in range(36)).encode('utf-8')
+        profiles_data = {
+                            'profiles':[
+                                            {
+                                                'type':'ADULT',
+                                                'default': True,
+                                                'id': id_a,
+                                                'name': plugin.localize(30302),
+                                                "avatar": {"url": formatimg(avatar_a, 'icon')}
+                                            },
+                                            {
+                                                'type':'KID',
+                                                'default': True,
+                                                'name': plugin.localize(30301),
+                                                'id': id_k,
+                                                "avatar": {"url": formatimg(avatar_k, 'icon')}
+                                            }
+                                       ]
+                        }
+    for profile in profiles_data['profiles']:
+        profile_type = profile['type']
+        if MODE_KIDS and profile_type != 'KID' and (not EMAIL or not PASSWORD):
+            continue
+        profile_id = profile['id']
+        profile_name = profile['name'].title()
+        is_master = profile['default']
+        avatar = formatimg(profile['avatar']['url'], 'icon')
+        yield Listitem.from_dict(
+                                    sub_menu,
+                                    bold(profile_name),
+                                    art={"thumb": avatar},
+                                    params={
+                                                'profile_id': profile_id,
+                                                'profile_type': profile_type,
+                                                'pin': pin,
+                                                'is_master': is_master
+                                           }
+                                )
+
+
+@Route.register
+def sub_menu(plugin, profile_id, profile_type, is_master, pin):
+    if profile_type == 'KID':
         plugin.log('Creating Kids Menu', lvl=plugin.WARNING)
+        # get kids user id
+       
         yield Listitem.from_dict(
                                     LIVE_TV,
-                                    bold(plugin.localize(Live_TV)),
-                                    params={"KIDS": True}
+                                    bold(plugin.localize(30101)),
+                                    params={
+                                                'profile_id': profile_id,
+                                                'profile_type': profile_type,
+                                                'is_master': is_master
+                                           }
                                 )
         yield Listitem.from_dict(
-                                    CATEGORIES,
-                                    bold(plugin.localize(TV_Shows)),
-                                    params={"TYPE": "SERIES", "KIDS": True}
+                                    BROWSE_TVSHOWS,
+                                    bold(plugin.localize(30102)),
+                                    params={
+                                                "genreId":"",
+                                                "productSubType": "SERIES",
+                                                "page": 0,
+                                                'profile_id': profile_id,
+                                                'profile_type': profile_type,
+                                                'is_master': is_master
+                                           }
                                 )
         yield Listitem.from_dict(
-                                    CATEGORIES,
-                                    bold(plugin.localize(TV_Programs)),
-                                    params={"TYPE": "PROGRAM", "KIDS": True}
+                                    BROWSE_TVSHOWS,
+                                    bold(plugin.localize(30103)),
+                                    params={
+                                                "genreId":"",
+                                                "productSubType": "PROGRAM",
+                                                "page": 0,
+                                                'profile_id': profile_id,
+                                                'profile_type': profile_type,
+                                                'is_master': is_master
+                                           }
                                 )
+        yield Listitem.from_dict(
+                                    BROWSE_MOVIES,
+                                    bold(plugin.localize(30104)),
+                                    params={
+                                                'genreId':'',
+                                                'page': 0,
+                                                'profile_id': profile_id,
+                                                'profile_type': profile_type,
+                                                'is_master': is_master
+                                           }
+                                )
+        yield Listitem.search(
+                                SEARCH_CONTENT,
+                                profile_id=profile_id,
+                                profile_type=profile_type,
+                                is_master=is_master
+                             )
     else:
+        if MODE_KIDS:
+            user_input = keyboard(
+                                    "Enter your PIN Code",
+                                    "",
+                                    True
+                                 )
+            if user_input != pin:
+                plugin.notify(
+                                plugin.localize(30202),
+                                plugin.localize(30201),
+                                display_time=5000,
+                                sound=True
+                             )
+                yield False
+                return
         plugin.log('Creating Main Menu', lvl=plugin.WARNING)
         yield Listitem.from_dict(
                                     LIVE_TV,
-                                    bold(plugin.localize(Live_TV))
+                                    bold(plugin.localize(30101)),
+                                    params={
+                                                'profile_id': profile_id,
+                                                'profile_type': profile_type,
+                                                'is_master': is_master
+                                           }
                                 )
         yield Listitem.from_dict(
                                     CATEGORIES,
-                                    bold(plugin.localize(TV_Shows)),
-                                    params={"TYPE": "SERIES"}
+                                    bold(plugin.localize(30102)),
+                                    params={
+                                                "productSubType": "SERIES",
+                                                'profile_id': profile_id,
+                                                'profile_type': profile_type,
+                                                'is_master': is_master
+                                           }
                                 )
         yield Listitem.from_dict(
                                     CATEGORIES,
-                                    bold(plugin.localize(TV_Programs)),
-                                    params={"TYPE": "PROGRAM"}
+                                    bold(plugin.localize(30103)),
+                                    params={
+                                                "productSubType": "PROGRAM",
+                                                'profile_id': profile_id,
+                                                'profile_type': profile_type,
+                                                'is_master': is_master
+                                           }
                                 )
         yield Listitem.from_dict(
                                     CATEGORIES_M,
-                                    bold('Movies'),
-                                    params={"TYPE": "PROGRAM"}
+                                    bold(plugin.localize(30104)),
+                                    params={
+                                                'profile_id': profile_id,
+                                                'profile_type': profile_type,
+                                                'is_master': is_master
+                                           }
                                 )
-        yield Listitem.from_dict(
-                                    KIDS_MENU,
-                                    bold(plugin.localize(Kids))
-                                )
-        yield Listitem.search(SEARCH_CONTENT)
-
-@Route.register
-def KIDS_MENU(plugin):
-    plugin.log('Creating Kids Menu', lvl=plugin.WARNING)
-    yield Listitem.from_dict(
-                                LIVE_TV,
-                                bold(plugin.localize(Live_TV)),
-                                params={"KIDS": True}
-                            )
-    yield Listitem.from_dict(
-                                CATEGORIES,
-                                bold(plugin.localize(TV_Shows)),
-                                params={"TYPE": "SERIES", "KIDS": True}
-                            )
-    yield Listitem.from_dict(
-                                CATEGORIES,
-                                bold(plugin.localize(TV_Programs)),
-                                params={"TYPE": "PROGRAM", "KIDS": True}
-                            )
-
-
-@Route.register(autosort=False, content_type="movies")
-def SEARCH_CONTENT(plugin, search_query, page=0, **kwargs):
-    plugin.add_sort_methods(xbmcplugin.SORT_METHOD_UNSORTED)
-    plugin.log('SEARCH_CONTENT', lvl=plugin.DEBUG)
-    headers = {'User-Agent': USER_AGENT}
-    filters = json.dumps({
-                            "name": search_query,
-                            "pageNumber": page,
-                            "pageSize": 30
-                        }, separators=(',', ':'))
-    params = urlencode({'request': filters})
-    plugin.log('Fetching url: %s' % SEARCH_URL, lvl=plugin.DEBUG)
-    plugin.log('Fetching params: %s' % params, lvl=plugin.DEBUG)
-    Response = urlquick.get(SEARCH_URL, params=params, headers=headers).json()
-    items = Response['productList']
-    hasMore = items['hasMore']
-    for item in items['products']:
-        title = item['title']
-        plot = item['description']
-        if item['pricingPlans'][0]['availability']:
-            if item['pricingPlans'][0]['availability']['plus']:
-                if HIDE_PREMIUM:
-                    continue
-                title += ' |Premium|'
-                plot = '[Premium]\n' + plot
-        else:
-            continue
-        itemId = item['id']
-        productType = item['productType']
-        liz = Listitem()
-        plugin.log('title: %s' % ensure_native_str(title))
-        liz.label = ensure_native_str(title)
-        liz.art["poster"] = formatimg(item['image']['posterImage'], 'poster')
-        liz.art["fanart"] = formatimg(item['image']['thumbnailImage'], 'fanart')
-        aired = str(item['createdDate'].split('T')[0])
-        liz.info.date(aired, "%Y-%m-%d")
-        if productType == 'MOVIE':
-            liz.info['plot'] = '[MOVIE]: %s' % ensure_native_str(plot)
-            liz.info['mediatype'] = "movie"
-            liz.set_callback(play_video, url=itemId)
-        elif productType == 'SHOW':
-            liz.info['plot'] = '[TV SHOWS]: %s' % ensure_native_str(plot)
-            liz.info['mediatype'] = "show"
-            liz.set_callback(BROWSE_SEASONS, url=itemId)            
-        plugin.log('Adding: %s' % title, lvl=plugin.DEBUG)
-        yield liz
-
-    if hasMore:
-        page = int(page)+1
-        yield Listitem.next_page(
-                                    search_query=search_query,
-                                    page=str(page)
-                                )
-        yield False
+        if EMAIL and PASSWORD:
+            yield Listitem.from_dict(
+                                        MY_LIST,
+                                        bold(plugin.localize(30105)),
+                                        params={
+                                                'profile_id': profile_id,
+                                                'profile_type': profile_type,
+                                                'is_master': is_master
+                                               }
+                                    )
+        yield Listitem.search(
+                                SEARCH_CONTENT,
+                                profile_id=profile_id,
+                                profile_type=profile_type,
+                                is_master=is_master
+                             )

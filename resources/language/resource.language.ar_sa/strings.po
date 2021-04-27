@@ -16,18 +16,18 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-
+# Settings
 msgctxt "#30000"
-msgid "Enable Debugging [Log errors]"
-msgstr ""
+msgid "Content"
+msgstr "المحتوى"
 
 msgctxt "#30001"
-msgid "Something went wrong, Try again..."
-msgstr "..حصل خطأ..الرجاء المحاولة مرة أخرى"
+msgid "Movies Category Mode"
+msgstr "طريقة عرض فئات الأفلام"
 
 msgctxt "#30002"
-msgid "Quality"
-msgstr "جودة الصورة"
+msgid "Shows Category Mode"
+msgstr "طريقة عرض فئات المسلسلات"
 
 msgctxt "#30003"
 msgid "Hide Clips"
@@ -38,18 +38,48 @@ msgid "Hide Premium Content"
 msgstr "إخفاء المحتوى الخاص بالمشتركين"
 
 msgctxt "#30005"
-msgid "Category Sorting Mode"
-msgstr "طريقة عرض الفئات"
-
-msgctxt "#30002"
-msgid "Select Preferred Quality"
-msgstr "اختر جودة الصورة"
-
-msgctxt "#30006"
 msgid "Mode Kids"
 msgstr "وضع الاطفال"
 
+msgctxt "#30006"
+msgid "Account"
+msgstr "إعدادات الحساب"
 
+
+msgctxt "#30007"
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+msgctxt "#30008"
+msgid "Password"
+msgid "كلمة السر"
+
+msgctxt "#30009"
+msgid "Encrypted Password"
+msgid "كلمة السر المشفرة"
+
+msgctxt "#30010"
+msgid "Advanced"
+msgstr "إعدادات متقدمة"
+
+msgctxt "#30011"
+msgid "Clear Cache"
+msgstr "مسح ذاكرة التخزين المؤقت"
+
+msgctxt "#30012"
+msgid "Custom Library Folder"
+msgstr "مجلد مكتبة خاص"
+
+msgctxt "#30009"
+msgid "Genre"
+msgstr "فئة"
+
+msgctxt "#30010"
+msgid "Dialect"
+msgstr "لهجة"
+
+
+# Menus
 msgctxt "#30101"
 msgid "Live TV"
 msgstr "المباشر"
@@ -63,21 +93,86 @@ msgid "TV Programs"
 msgstr "البرامج"
 
 msgctxt "#30104"
-msgid "Search"
-msgstr "بحث"
+msgid "Movies"
+msgstr "الأفلام"
 
 msgctxt "#30105"
+msgid "My List"
+msgstr "قائمتي"
+
+msgctxt "#30106"
 msgid "Season"
 msgstr "الموسم"
 
-msgctxt "#30106"
+msgctxt "#30107"
 msgid "Clips"
 msgstr "كليبات"
 
-msgctxt "#30107"
-msgid "Kids"
-msgstr "اطفال"
 
-msgctxt "#30108"
+
+# msgs
+msgctxt "#30201"
+msgid "Wrong Code"
+msgstr "كود خاطئ"
+
+msgctxt "#30202"
+msgid "This Section is empty"
+msgstr "هذا القسم خالي"
+
+msgctxt "#30203"
+msgid "Cache Cleared Successfully"
+msgstr "مسحت ذاكرة التخزين المؤقت بنجاح"
+
+msgctxt "#30204"
+msgid "Successfully Added to your List"
+msgstr "اضيف الى قائمتك بنجاح"
+
+msgctxt "#30205"
+msgid "Somthing Went Wrong, Please retry"
+msgstr "حصل خطأ الرجاء المحاولة مرة أخرى"
+
+msgctxt "#30206"
+msgid "Login Failed"
+msgstr "فشل عملية الدخول"
+
+msgctxt "#30207"
+msgid "Premium Video"
+msgstr "خاص بالمشتركين"
+
+msgctxt "#30208"
+msgid "Info"
+msgstr "إعلام"
+
+msgctxt "#30209"
+msgid "Error"
+msgstr "خطأ"
+
+msgctxt "#30210"
+msgid "Successfully Added to Library"
+msgstr "اضيف الى المكتبة بنجاح"
+
+msgctxt "#30211"
+msgid "Add To Library"
+msgstr "اضف الى المكتبة"
+
+msgctxt "#30212"
+msgid "Add To My List"
+msgstr "اضف الى قائمتي"
+
+
+#####
+msgctxt "#30301"
+msgid "Kids"
+msgstr "أطفال"
+
+msgctxt "#30302"
+msgid "Visitor"
+msgstr "زائر"
+
+msgctxt "#30308"
 msgid "Premium"
 msgstr "للمشتركين"
+
+msgctxt "#30309"
+msgid "Trailer"
+msgstr "عرض مختصر"
