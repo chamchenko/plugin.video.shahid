@@ -9,9 +9,13 @@ Live Streaming, VOD, Shahid, TV Shows and TV Programs from https://shahid.mbc.ne
 ## What Works
  - Live TV
  - Free TV Shows & TV Programs
+ - Premium Content
+ - Add To My List (adding content to shahid My List)
+ - Add To Librart (exporting movies and tv shows to Kodi Library)
  - Kids Mode available throught the add-on settings
-## What Does not Work
- - Premium content (on the todo list)
+ - Kids Mode is protected with pin code when account info are provided
+## To-Do
+ - tv integration for live channels
 
 ## Titles not displayed?
  - most of the title are in arabic. for kodi to display them correctly you need to change the fonts settings to arial based
