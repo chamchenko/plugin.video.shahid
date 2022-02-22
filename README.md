@@ -20,3 +20,7 @@ Live Streaming, VOD, Shahid, TV Shows and TV Programs from https://shahid.mbc.ne
 ## Titles not displayed?
  - most of the title are in arabic. for kodi to display them correctly you need to change the fonts settings to arial based
  Settings->Interface->Skin->Fonts set it to arial based
+
+## By me a cofee
+If you want to donate you can do it using this link down here
+https://www.paypal.com/donate/?hosted_button_id=NB4C25J6ED3ZE
